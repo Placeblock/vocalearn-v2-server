@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Api Doc</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="nav">
+        <p id="nav-header">Vocalearn Api Docs</p>
+        <div id="nav-links">
+            <a href="index.html" class="nav-link">General</a>
+            <a href="authentication.html" class="nav-link">Authentication</a>
+            <a href="lesson.html" class="active-link nav-link">Lesson</a>
+            <div id="nav-link-detail">
+                <a href="#create-section" class="nav-link-detail-link">create</a>
+                <a href="#delete-section" class="nav-link-detail-link">delete</a>
+                <a href="#metadata-section" class="nav-link-detail-link">metadata</a>
+                <a href="#content-section" class="nav-link-detail-link">content</a>
+                <a href="#user-section" class="nav-link-detail-link">user</a>
+                <a href="#search-section" class="nav-link-detail-link">search</a>
+            </div>
+            <a href="selection.html" class="nav-link">Selection</a>
+            <a href="vocable.html" class="nav-link">Vocable</a>
+            <a href="statistics.html" class="nav-link">Statistics</a>
+        </div>
+    </div>
+    <div id="content">
+        <h1>Lesson</h1>
+        <p>
+            Lessons are a collection of vocables. They are used to learn Vocables. 
+            Example: Learn 10 Vocables from this lesson. 
+        </p>
+        <br>
+        <div class="doc-section" id="create-section">
+            <h3>Create Lesson Request</h3>
+            <p>
+                With this request you can create new lessons
+            </p>
+            <div class="request">
+                <p class="request-header">HTTP-Request <span style="color: black;">(POST)</span></p>
+                <p class="request-url">/lesson/create</p>
+                <div class="request-params">
+                    <p class="request-params-header">Parameter</p>
+                    <p>"name" (The name of the new lesson)</p>
+                </div>
+                <div class="request-receive">
+                    <p class="request-receive-header">Receive</p>
+                    <p>The lesson id</p>
+                    <div class="request-receive-format">
+                        <p>{</p>
+                        <p>"id":id</p>
+                        <p>}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="doc-section" id="delete-section">
+            <h3>Delete Lesson Request</h3>
+            <p>
+                With this request you can delete lessons
+            </p>
+            <div class="request">
+                <p class="request-header">HTTP-Request <span style="color: black;">(DELETE)</span></p>
+                <p class="request-url">/lesson/delete</p>
+                <div class="request-params">
+                    <p class="request-params-header">Parameter</p>
+                    <p>"id" (The id of the lesson)</p>
+                </div>
+            </div>
+        </div>
+        <div class="doc-section" id="metadata-section">
+            <h3>Lesson Metadata Request</h3>
+            <p>
+                This request responds with the metadata of the specified lesson, 
+                consisting of the name, the language and the creationdate
+            </p>
+            <div class="request">
+                <p class="request-header">HTTP-Request <span style="color: black;">(GET)</span></p>
+                <p class="request-url">/lesson/metadata</p>
+                <div class="request-params">
+                    <p class="request-params-header">Parameter</p>
+                    <p>"id" (The id of the lesson)</p>
+                </div>
+                <div class="request-receive">
+                    <p class="request-receive-header">Receive</p>
+                    <p>The lesson metadata</p>
+                    <div class="request-receive-format">
+                        <p>{</p>
+                        <p>"metadata":</p>
+                        <p style="margin-left: 20px;">{</p>
+                        <p style="margin-left: 20px;">"name": name,</p>
+                        <p style="margin-left: 20px;">"creation_date": creation_date</p>
+                        <p style="margin-left: 20px;">}</p>
+                        <p>}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="doc-section" id="content-section">
+            <h3>Lesson Content Request</h3>
+            <p>
+                With this request you can receive all of the vocables, which are inside
+                of this lesson.
+            </p>
+            <div class="request">
+                <p class="request-header">HTTP-Request <span style="color: black;">(GET)</span></p>
+                <p class="request-url">/lesson/content</p>
+                <div class="request-params">
+                    <p class="request-params-header">Parameter</p>
+                    <p>"id" (The id of the lesson)</p>
+                </div>
+                <div class="request-receive">
+                    <p class="request-receive-header">Receive</p>
+                    <p>The lesson content</p>
+                    <div class="request-receive-format">
+                        <p>{</p>
+                        <p>"content":</p>
+                        <p style="margin-left: 20px;">{</p>
+                        <p style="margin-left: 20px;">vocableid:</p>
+                        <p style="margin-left: 40px;">{</p>
+                        <p style="margin-left: 40px;">"n_text":n_text,</p>
+                        <p style="margin-left: 40px;">"f_text":f_text,</p>
+                        <p style="margin-left: 40px;">"hint":hint</p>
+                        <p style="margin-left: 40px;">},</p>
+                        <p style="margin-left: 20px;">vocableid:</p>
+                        <p style="margin-left: 40px;">{</p>
+                        <p style="margin-left: 40px;">"n_text":n_text,</p>
+                        <p style="margin-left: 40px;">"f_text":f_text,</p>
+                        <p style="margin-left: 40px;">"hint":hint</p>
+                        <p style="margin-left: 40px;">}</p>
+                        <p style="margin-left: 20px;">}</p>
+                        <p>}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="doc-section" id="usermetadata-section">
+            <h3>User's Lessons with Metadata Request</h3>
+            <p>
+                Responds with all lessons of the user which is logged in with the additional metadata.
+            </p>
+            <div class="request">
+                <p class="request-header">HTTP-Request <span style="color: black;">(GET)</span></p>
+                <p class="request-url">/lesson/metadatauser</p>
+                <div class="request-receive">
+                    <p class="request-receive-header">Receive</p>
+                    <p>The user's lessons with metadata</p>
+                    <div class="request-receive-format">
+                        <p>{</p>
+                        <p>"lessons":</p>
+                        <p style="margin-left: 20px;">{</p>
+                        <p style="margin-left: 40px;">lessonid:</p>
+                        <p style="margin-left: 40px;">{</p>
+                        <p style="margin-left: 60px;">"name": name</p>
+                        <p style="margin-left: 60px;">"creation_date": creation_date</p>
+                        <p style="margin-left: 40px;">},</p>
+                        <p style="margin-left: 40px;">lessonid:</p>
+                        <p style="margin-left: 40px;">{</p>
+                        <p style="margin-left: 60px;">"name": name</p>
+                        <p style="margin-left: 60px;">"creation_date": creation_date</p>
+                        <p style="margin-left: 40px;">}</p>
+                        <p style="margin-left: 20px;">}</p>
+                        <p>}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="doc-section" id="user-section">
+            <h3>User's Lessons Request</h3>
+            <p>
+                Responds with all lessons of the user which is logged in.
+            </p>
+            <div class="request">
+                <p class="request-header">HTTP-Request <span style="color: black;">(GET)</span></p>
+                <p class="request-url">/lesson/user</p>
+                <div class="request-receive">
+                    <p class="request-receive-header">Receive</p>
+                    <p>The user's lessons</p>
+                    <div class="request-receive-format">
+                        <p>{</p>
+                        <p>"lessons":</p>
+                        <p style="margin-left: 20px;">[</p>
+                        <p style="margin-left: 20px;">lessonid,</p>
+                        <p style="margin-left: 20px;">lessonid</p>
+                        <p style="margin-left: 20px;">...</p>
+                        <p style="margin-left: 20px;">]</p>
+                        <p>}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="doc-section" id="search-section">
+            <h3>Search Lesson Request</h3>
+            <p>
+                With this request you can search trough all lessons in the database with
+                regex.
+            </p>
+            <div class="request">
+                <p class="request-header">HTTP-Request <span style="color: black;">(GET)</span></p>
+                <p class="request-url">/lesson/search</p>
+                <div class="request-params">
+                    <p class="request-params-header">Parameter</p>
+                    <p>"regex" (The regex to search)</p>
+                </div>
+                <div class="request-receive">
+                    <p class="request-receive-header">Receive</p>
+                    <p>The matched lessons</p>
+                    <div class="request-receive-format">
+                        <p>{</p>
+                        <p>"lessons":</p>
+                        <p style="margin-left: 20px;">[</p>
+                        <p style="margin-left: 20px;">lessonid,</p>
+                        <p style="margin-left: 20px;">lessonid</p>
+                        <p style="margin-left: 20px;">...</p>
+                        <p style="margin-left: 20px;">]</p>
+                        <p>}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Api Doc</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="nav">
+        <p id="nav-header">Vocalearn Api Docs</p>
+        <div id="nav-links">
+            <a href="index.html" class="active-link nav-link">General</a>
+            <div id="nav-link-detail">
+                <a href="#attention-section" class="nav-link-detail-link">attention</a>
+            </div>
+            <a href="authentication.html" class="nav-link">Authentication</a>
+            <a href="lesson.html" class="nav-link">Lesson</a>
+            <a href="selection.html" class="nav-link">Selection</a>
+            <a href="vocable.html" class="nav-link">Vocable</a>
+            <a href="statistics.html" class="nav-link">Statistics</a>
+        </div>
+    </div>
+    <div id="content">
+        <h1>General</h1>
+        <p>
+            This is the API Documentation for the Vocalearn API. With Vocalearn
+            you can learn vocables, manage lessons, create selections, show your
+            statistics and more. You can use this API to comunicate with the
+            Vocalearn Database.
+        </p>
+        <br>
+        <br>
+        <div class="doc-section" id="attention-section">
+            <h2>Attention:</h2>
+            <p>
+                Each Request could respond with an error! A good example is trying to get
+                a lesson's metadata without specifying your API Token:
+            </p>
+            <div class="request">
+                <p class="request-header">HTTP-Request <span style="color: black;">(GET)</span></p>
+                <p class="request-url">/lesson/metadata</p>
+                <div class="request-params">
+                    <p class="request-params-header">Parameter</p>
+                    <p>"id" (The lesson id)</p>
+                </div>
+                <div class="request-receive">
+                    <p class="request-receive-header">Receive</p>
+                    <p>An error response</p>
+                    <div class="request-receive-format">
+                        <p>{</p>
+                        <p>"error": </p>
+                        <p style="margin-left: 20px;">{</p>
+                        <p style="margin-left: 20px;">"httpcode": 401</p>
+                        <p style="margin-left: 20px;">"errorcode": 1001</p>
+                        <p style="margin-left: 20px;">"message": "Unauthorized! Please add a token!"</p>
+                        <p style="margin-left: 20px;">}</p>
+                        <p>}</p>
+                    </div>
+                </div>
+            </div>
+            <p>The structure of error responses are always the same.</p>
+        </div>
+    </div>
+</body>
+</html>

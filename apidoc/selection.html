@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Api Doc</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="nav">
+        <p id="nav-header">Vocalearn Api Docs</p>
+        <div id="nav-links">
+            <a href="index.html" class="nav-link">General</a>
+            <a href="authentication.html" class="nav-link">Authentication</a>
+            <a href="lesson.html" class="nav-link">Lesson</a>
+            <a href="selection.html" class="active-link nav-link">Selection</a>
+            <div id="nav-link-detail">
+                <a href="#create-section" class="nav-link-detail-link">create</a>
+                <a href="#delete-section" class="nav-link-detail-link">delete</a>
+                <a href="#add-section" class="nav-link-detail-link">add</a>
+                <a href="#remove-section" class="nav-link-detail-link">remove</a>
+                <a href="#metadata-section" class="nav-link-detail-link">metadata</a>
+                <a href="#content-section" class="nav-link-detail-link">content</a>
+                <a href="#user-section" class="nav-link-detail-link">user</a>
+            </div>
+            <a href="vocable.html" class="nav-link">Vocable</a>
+            <a href="statistics.html" class="nav-link">Statistics</a>
+        </div>
+    </div>
+    <div id="content">
+        <h1>Selection</h1>
+        <p>
+            A selection contains multiple lessons. Example: An user created 5 lessons
+            for english subject. Now there is an exam and the user wants to learn all
+            the five lessons for it. Then the user adds all 5 lessons to a created
+            selection and learns just this selection!
+        </p>
+        <div class="doc-section" id="create-section">
+            <h3>Create Selection Request</h3>
+            <p>
+                With this request you can create new selection
+            </p>
+            <div class="request">
+                <p class="request-header">HTTP-Request <span style="color: black;">(POST)</span></p>
+                <p class="request-url">/selection/create</p>
+                <div class="request-params">
+                    <p class="request-params-header">Parameter</p>
+                    <p>"name" (The name of the new selection)</p>
+                </div>
+                <div class="request-receive">
+                    <p class="request-receive-header">Receive</p>
+                    <p>The selection id</p>
+                    <div class="request-receive-format">
+                        <p>{</p>
+                        <p>"id":id</p>
+                        <p>}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="doc-section" id="delete-section">
+            <h3>Delete Selection Request</h3>
+            <p>
+                With this request you can delete selections
+            </p>
+            <div class="request">
+                <p class="request-header">HTTP-Request <span style="color: black;">(DELETE)</span></p>
+                <p class="request-url">/selection/delete</p>
+                <div class="request-params">
+                    <p class="request-params-header">Parameter</p>
+                    <p>"id" (The id of the selection)</p>
+                </div>
+            </div>
+        </div>
+        <div class="doc-section" id="add-section">
+            <h3>Add Lesson Request</h3>
+            <p>
+                With this request you can add a lesson to a selection
+            </p>
+            <div class="request">
+                <p class="request-header">HTTP-Request <span style="color: black;">(POST)</span></p>
+                <p class="request-url">/selection/addlesson</p>
+                <div class="request-params">
+                    <p class="request-params-header">Parameter</p>
+                    <p>"id" (The id of the selection)</p>
+                    <p>"lesson" (The id of the lesson)</p>
+                </div>
+            </div>
+        </div>
+        <div class="doc-section" id="remove-section">
+            <h3>Remove Lesson Request</h3>
+            <p>
+                With this request you can remove a lesson from a selection
+            </p>
+            <div class="request">
+                <p class="request-header">HTTP-Request <span style="color: black;">(DELETE)</span></p>
+                <p class="request-url">/selection/removelesson</p>
+                <div class="request-params">
+                    <p class="request-params-header">Parameter</p>
+                    <p>"id" (The id of the selection)</p>
+                    <p>"lesson" (The id of the lesson)</p>
+                </div>
+            </div>
+        </div>
+        <div class="doc-section" id="metadata-section">
+            <h3>Selection Metadata Request</h3>
+            <p>
+                This request responds with the metadata of the specified selection, 
+                consisting of the name and the creationdate
+            </p>
+            <div class="request">
+                <p class="request-header">HTTP-Request <span style="color: black;">(GET)</span></p>
+                <p class="request-url">/selection/metadata</p>
+                <div class="request-params">
+                    <p class="request-params-header">Parameter</p>
+                    <p>"id" (The id of the selection)</p>
+                </div>
+                <div class="request-receive">
+                    <p class="request-receive-header">Receive</p>
+                    <p>The selection metadata</p>
+                    <div class="request-receive-format">
+                        <p>{</p>
+                        <p>"metadata":</p>
+                        <p style="margin-left: 20px;">{</p>
+                        <p style="margin-left: 20px;">"name": name,</p>
+                        <p style="margin-left: 20px;">"creation_date": creation_date</p>
+                        <p style="margin-left: 20px;">}</p>
+                        <p>}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="doc-section" id="content-section">
+            <h3>Selection Content Request</h3>
+            <p>
+                With this request you can receive all of the vocables, which are inside
+                of this selection.
+            </p>
+            <div class="request">
+                <p class="request-header">HTTP-Request <span style="color: black;">(GET)</span></p>
+                <p class="request-url">/selection/content</p>
+                <div class="request-params">
+                    <p class="request-params-header">Parameter</p>
+                    <p>"id" (The id of the selection)</p>
+                </div>
+                <div class="request-receive">
+                    <p class="request-receive-header">Receive</p>
+                    <p>The selection content</p>
+                    <div class="request-receive-format">
+                        <p>{</p>
+                        <p>"content":</p>
+                        <p style="margin-left: 20px;">[</p>
+                        <p style="margin-left: 20px;">lessonid,</p>
+                        <p style="margin-left: 20px;">lessonid</p>
+                        <p style="margin-left: 20px;">...</p>
+                        <p style="margin-left: 20px;">]</p>
+                        <p>}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="doc-section" id="user-section">
+            <h3>User's Selections Request</h3>
+            <p>
+                Responds with all selections of the user which is logged in.
+            </p>
+            <div class="request">
+                <p class="request-header">HTTP-Request <span style="color: black;">(GET)</span></p>
+                <p class="request-url">/selection/user</p>
+                <div class="request-receive">
+                    <p class="request-receive-header">Receive</p>
+                    <p>The user's selections</p>
+                    <div class="request-receive-format">
+                        <p>{</p>
+                        <p>"selections":</p>
+                        <p style="margin-left: 20px;">[</p>
+                        <p style="margin-left: 20px;">selectionid,</p>
+                        <p style="margin-left: 20px;">selectionid</p>
+                        <p style="margin-left: 20px;">...</p>
+                        <p style="margin-left: 20px;">]</p>
+                        <p>}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,427 @@
+const db = require("./database.js");
+const buildError = require("../builderror");
+var randomToken = require('random-token');
+var randomTokenInt = require('random-token').create('1234567890');
+var rtInt = randomTokenInt.gen("1234567890");
+const bcrypt = require("bcrypt");
+var nodemailer = require('nodemailer'); 
+
+var transporter = nodemailer.createTransport({
+    host: 'localhost',
+    port: 25,
+    secure: false,
+    ignoreTLS: true
+});
+
+  
+
+exports.checkcredentials = (id, password) => {
+    return new Promise(function(resolve, reject) {
+        var sql = "SELECT password from voc_users WHERE id=?";
+        db.query(sql, [id], function(error, rows, fields) {
+            if(error != null) {
+                reject(buildError(500, 1100, "Database Error: " + error));
+                return;
+            }
+            var password_hash = rows[0]["password"];
+            bcrypt.compare(password, password_hash, function(err, result) {
+                if(err) {
+                    reject(buildError(500, 1101, "Bcrypt Error: " + err));
+                    return;
+                }
+                resolve(result);
+            });
+        });
+    });
+}
+
+exports.userbyemail = (email) => {
+    return new Promise(function(resolve, reject) {
+        var sql = "SELECT id from voc_users WHERE email=?";
+        db.query(sql, [email], function(error, rows, fields) {
+            if(error != null) {
+                reject(buildError(500, 1102, "Database Error: " + error));
+                return;
+            }
+            if(rows.length == 0) {
+                reject(buildError(400, 1103, "There is no user with that email"));
+                return;
+            }
+            resolve(rows[0]["id"]);
+        });
+    });
+}
+
+exports.createtoken = (id) => {
+    return new Promise(function(resolve, reject) {
+        var token = randomToken(60);
+        var sql = "INSERT INTO api_tokens (owner_id, token) VALUES (?,?)";
+        db.query(sql, [id, token], function(error, result, fields) {
+            if(error != null) {
+                reject(buildError(500, 1104, "Database Error: " + error));
+                return;
+            }
+            resolve(token);
+        });
+    });
+}
+
+exports.removetoken = (token) => {
+    return new Promise(function(resolve, reject) {
+        var sql = "DELETE FROM api_tokens WHERE token = ?";
+        db.query(sql, [token], function(error, result, fields) {
+            if(error != null) {
+                reject(buildError(500, 1104, "Database Error: " + error));
+                return;
+            }
+            resolve();
+        });
+    });
+}
+
+exports.userbytoken = (token) => {
+    return new Promise(function(resolve, reject) {
+        var sql = "SELECT owner_id FROM api_tokens WHERE token = ?";
+        db.query(sql, [token], function(error, rows, fields) {
+            if(error != null) {
+                reject(buildError(500, 1104, "Database Error: " + error));
+                return;
+            }
+            if(rows.length == 0) {
+                reject(buildError(400, 1103, "There is no user with that token"));
+                return;
+            }
+            resolve(rows[0]["owner_id"]);
+        });
+    });
+}
+
+exports.namebyuser = (id) => {
+    return new Promise(function(resolve, reject) {
+        var sql = "SELECT name FROM voc_users WHERE id = ?";
+        db.query(sql, [id], function(error, rows, fields) {
+            if(error != null) {
+                reject(buildError(500, 1104, "Database Error: " + error));
+                return;
+            }
+            if(rows.length == 0) {
+                reject(buildError(400, 1106, "There is no user with that id"));
+                return;
+            }
+            resolve(rows[0]["name"]);
+        });
+    });
+}
+
+function searchuser(regex) {
+    return new Promise(async function(resolve, reject) {
+        var sql = "SELECT id, name FROM voc_users WHERE name REGEXP " + db.escape(regex);
+        db.query(sql, async function(error, rows, fields) {
+            if(error != null) {
+                reject(buildError(500, 2106, "Database Error: " + error));
+                return;
+            }
+            var result = {};
+            for(row of rows) {
+                result[row["id"]] = row["name"];
+            }
+            resolve(result);
+        });
+    });
+}
+exports.searchuser = searchuser;
+
+function deleteUser(id) {
+    return new Promise(function(resolve, reject) {
+        var sql = "DELETE FROM voc_users WHERE id=?";
+        db.query(sql, [id], function(error, rows, fields) {
+            if(error != null) {
+                reject(buildError(500, 1104, "Database Error: " + error));
+                return;
+            }
+            resolve();
+        });
+    });
+}
+exports.deleteUser = deleteUser;
+
+function getEmailValidateToken(email) {
+    return new Promise(function(resolve, reject) {
+        var sql = "SELECT token, reg_date, userid FROM email_validate INNER JOIN voc_users ON email_validate.userid=voc_users.id WHERE voc_users.email = ?";
+        db.query(sql, [email], function(error, rows, fields) {
+            if(error != null) {
+                reject(buildError(500, 1107, "Database Error: " + error));
+                return;
+            }
+            if(rows.length === 0) {
+                reject(buildError(500, 1108, "There is no token for that user"));
+                return;
+            }
+            if(new Date(rows[0]["reg_date"]) - new Date() > 1000*60*10) {
+                deleteUser(rows[0]["userid"]);
+                reject(buildError(500, 1108, "There is no token for that user"));
+                return;
+            }
+            resolve(rows[0]["token"]);
+        });
+    });
+}
+exports.getEmailValidateToken = getEmailValidateToken;
+
+function createEmailValidateToken(userid) {
+    const token = rtInt(6);
+    return new Promise(function(resolve, reject) {
+        var sql = "INSERT INTO email_validate (userid, token) VALUES(?, ?) ON DUPLICATE KEY UPDATE token=?";
+        db.query(sql, [userid, token, token], function(error, rows, fields) {
+            if(error != null) {
+                reject(buildError(500, 1109, "Database Error: " + error));
+                return;
+            }
+            resolve(token);
+        });
+    });
+}
+
+function deleteEmailValidateToken(userid) {
+    return new Promise(function(resolve, reject) {
+        var sql = "DELETE FROM email_validate WHERE userid = ?";
+        db.query(sql, [userid], function(error, rows, fields) {
+            if(error != null) {
+                reject(buildError(500, 1110, "Database Error: " + error));
+                return;
+            }
+            resolve();
+        });
+    });
+}
+exports.deleteEmailValidateToken = deleteEmailValidateToken;
+
+function sendEmailValidateToken(email, token) {
+    return new Promise(async function(resolve, reject) {
+        if(token === undefined) {
+            try {
+                token = await getEmailValidateToken(email);
+            } catch(error) {
+                reject(error);
+            }
+        }
+        var mailOptions = {
+            from: 'vocalearn@noreply.de',
+            to: email,
+            subject: 'Vocalearn - Email Bestätigung',
+            text: "Email bestätigen? Kein Problem!\n\nBestimmt brauchst du einen Code :)\n\nHier, der Code ist: " + token
+        };
+        transporter.sendMail(mailOptions, function(merror, info){
+            if (merror) {
+                reject(buildError(500, 1111, "Error: " + merror));
+            }
+        }); 
+        resolve();
+    });
+}
+exports.sendEmailValidateToken = sendEmailValidateToken;
+
+exports.register = (email, password, name) => {
+    return new Promise(async function(resolve, reject) {
+	bcrypt.hash(password, 10, function(err, hash) {
+		if(err) {
+		    reject(buildError(500, 1112, "Bcrypt Error: " + err));
+		    return;
+		}
+		var sql = "INSERT INTO voc_users (email, password, name, verified) VALUES (?, ?, ?, 0)";
+		db.query(sql, [email, hash, name], async function(error, result, fields) {
+		    if(error != null) {
+			reject(buildError(500, 1112, "Database Error: " + error));
+			return;
+		    }
+		    const token = await createEmailValidateToken(result.insertId);
+		    sendEmailValidateToken(email, token).then(() => {
+			resolve();
+		    }).catch((error) => {
+			reject(error);
+		    });
+		});
+
+	    });  
+    });
+}
+
+exports.setEmailValidated = (email) => {
+    return new Promise(function(resolve, reject) {
+        var sql = "UPDATE voc_users SET verified = 1 WHERE email = ?";
+        db.query(sql, [email], function(error, result, fields) {
+            if(error != null) {
+                reject(buildError(500, 1113, "Database Error: " + error));
+                return;
+            }
+            resolve();
+        });
+    });
+}
+
+
+//######################################### PASSWORD RESET
+
+function deletePasswordResetToken(userid) {
+    return new Promise(function(resolve, reject) {
+        var sql = "DELETE FROM password_reset WHERE userid = ?";
+        db.query(sql, [userid], function(error, rows, fields) {
+            if(error != null) {
+                reject(buildError(500, 1110, "Database Error: " + error));
+                return;
+            }
+            resolve();
+        });
+    });
+}
+
+function getPasswordResetToken(email) {
+    return new Promise(async function(resolve, reject) {
+        var sql = "SELECT token, reg_date, userid FROM password_reset INNER JOIN voc_users ON password_reset.userid=voc_users.id WHERE voc_users.email = ?";
+        db.query(sql, [email], async function(error, rows, fields) {
+            if(error != null) {
+                reject(buildError(500, 1114, "Database Error: " + error));
+                return;
+            }
+            if(rows.length === 0) {
+                reject(buildError(500, 1115, "There is no token for that user"));
+                return;
+            }
+            if(new Date(rows[0]["reg_date"]) - new Date() > 1000*60*10) {
+                deletePasswordResetToken(rows[0]["userid"]).then(() => {
+                    reject(buildError(500, 1116, "There is no token for that user"));
+                    return;
+                }).catch((err) => {
+                    reject(err);
+                    return;
+                })
+            }
+            resolve(rows[0]["token"]);
+        });
+    });
+}
+exports.getPasswordResetToken = getPasswordResetToken;
+
+function sendResetPasswordMail(email, token) {
+    return new Promise(async function(resolve, reject) {
+        if(token === undefined) {
+            try {
+                token = await getPasswordResetToken(email);
+            } catch(error) {
+                reject(error);
+            }
+        }
+        var mailOptions = {
+            from: 'vocalearn@noreply.de',
+            to: email,
+            subject: 'Vocalearn - Passwort Änderung',
+            text: "Passwort zurücksetzen? Kein Problem!\n\nBestimmt brauchst du einen Code :)\n\nHier, der Code ist: " + token 
+        };
+        transporter.sendMail(mailOptions, function(merror, info){
+            if (merror) {
+                reject(buildError(500, 1117, "Error: " + merror));
+            }
+        }); 
+        resolve();
+    });
+}
+
+exports.resetPasswordMail = (email, userid) => {
+    const token = rtInt(6);
+    return new Promise(async function(resolve, reject) {
+        var sql = "INSERT INTO password_reset (userid, token) VALUES(?, ?) ON DUPLICATE KEY UPDATE token=?";
+        db.query(sql, [userid, token, token], function(error, rows, fields) {
+            if(error != null) {
+                reject(buildError(500, 1118, "Database Error: " + error));
+                return;
+            }
+            sendResetPasswordMail(email, token).then(() => {
+                resolve();
+            }).catch((error) => {
+                reject(error);
+            });
+        });
+    });
+}
+
+exports.setPasswordResetValidated = (userid) => {
+    return new Promise(function(resolve, reject) {
+        var sql = "UPDATE password_reset SET verified = 1 WHERE userid = ?";
+        db.query(sql, [userid], function(error, result, fields) {
+            if(error != null) {
+                reject(buildError(500, 1113, "Database Error: " + error));
+                return;
+            }
+            console.log("validated!" + userid);
+            resolve();
+        });
+    });
+}
+
+exports.isPasswordResetValidated = (userid) => {
+    return new Promise(function(resolve, reject) {
+        var sql = "SELECT verified FROM password_reset WHERE userid = ?";
+        db.query(sql, [userid], function(error, rows, fields) {
+            if(error != null) {
+                reject(buildError(500, 1113, "Database Error: " + error));
+                return;
+            }
+            if(rows.length === 0) {
+                reject(buildError(500, 1115, "There is no token for that user"));
+                return;
+            }
+            resolve(rows[0]["verified"]);
+        });
+    });
+}
+
+exports.setnewpassword = (userid, password) => {
+    return new Promise(async function(resolve, reject) {
+        bcrypt.hash(password, 10, async function(err, hash) {
+            if(err) {
+                reject(buildError(500, 1112, "Bcrypt Error: " + err));
+                return;
+            }
+            var sql = "UPDATE voc_users SET password = ? WHERE id = ?";
+            db.query(sql, [hash, userid], async function(error, result, fields) {
+                if(error != null) {
+                    reject(buildError(500, 1113, "Database Error: " + error));
+                    return;
+                }
+                await deletePasswordResetToken(userid);
+                resolve();
+            });
+        });
+    });
+}
+
+exports.setdarkmode = (userid, darkmode) => {
+    return new Promise(async function(resolve, reject) {
+        var sql = "UPDATE voc_users SET darkmode = ? WHERE id = ?";
+        db.query(sql, [darkmode, userid], async function(error, result, fields) {
+            if(error != null) {
+                reject(buildError(500, 1113, "Database Error: " + error));
+                return;
+            }
+            resolve();
+        });
+    });
+}
+exports.getdarkmode = (userid) => {
+    return new Promise(async function(resolve, reject) {
+        var sql = "SELECT darkmode FROM voc_users WHERE id = ?";
+        db.query(sql, [userid], function(error, rows, fields) {
+            if(error != null) {
+                reject(buildError(500, 1113, "Database Error: " + error));
+                return;
+            }
+            if(rows.length === 0) {
+                reject(buildError(500, 1115, "There is no darkmode property for that user"));
+                return;
+            }
+            resolve(rows[0]["darkmode"]);
+        });
+    });
+}
+
+

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Api Doc</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="nav">
+        <p id="nav-header">Vocalearn Api Docs</p>
+        <div id="nav-links">
+            <a href="index.html" class="nav-link">General</a>
+            <a href="authentication.html" class="active-link nav-link">Authentication</a>
+            <div id="nav-link-detail">
+                <a href="#login-section" class="nav-link-detail-link">login</a>
+                <a href="#logout-section" class="nav-link-detail-link">logout</a>
+            </div>
+            <a href="lesson.html" class="nav-link">Lesson</a>
+            <a href="selection.html" class="nav-link">Selection</a>
+            <a href="vocable.html" class="nav-link">Vocable</a>
+            <a href="statistics.html" class="nav-link">Statistics</a>
+        </div>
+    </div>
+    <div id="content">
+        <h1>Authentication</h1>
+        <p>
+            The API is Tokenbased. That means, to use Vocalearns API you have to login with user credentials, and if they are correct
+            you will receive a token which you can save somewhere in your App. In each API request you should add a "token" parameter
+            which contains the token you received earlier.
+        </p>
+        <br>
+        
+        <div class="doc-section" id="login-section">
+            <h3>Login Request</h3>
+            <p>
+                In the Login Request you shouldn't pass a token, normally because you don't have one. This is how the request should look
+                like:
+            </p>
+            <div class="request">
+                <p class="request-header">HTTP-Request</p>
+                <p class="request-url">/token/login</p>
+                <div class="request-params">
+                    <p class="request-params-header">Parameter</p>
+                    <p>"email" (The email of the user)</p>
+                    <p>"password" (The password of the user)</p>
+                </div>
+                <div class="request-receive">
+                    <p class="request-receive-header">Receive</p>
+                    <p>The API Token</p>
+                    <div class="request-receive-format">
+                        <p>{</p>
+                        <p>"token":token</p>
+                        <p>}</p>
+                    </div>
+                </div>
+            </div>
+        </div>        
+        <div class="doc-section" id="logout-section">
+            <h3>Logout Request</h3>
+            <p>
+                When you login with the users credentials, a token is generated and stored
+                in the database. If you logout with this request, the token gets deleted.
+            </p>
+            <div class="request">
+                <p class="request-header">HTTP-Request</p>
+                <p class="request-url">/token/logout</p>
+                <div class="request-params">
+                    <p class="request-params-header">Parameter</p>
+                    <p>"token" (The token you want to logout)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

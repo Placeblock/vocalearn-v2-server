@@ -1,0 +1,22 @@
+var express = require("express");
+var app = express();
+var cors = require('cors')
+
+const doc_router = require("./doc_router");
+const api_router = require("./api_router");
+
+var corsOptions = {
+    origin: 'http://placeblock.undo.it:3000',
+    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+}
+
+app.use(cors(corsOptions));
+
+app.use("/doc", doc_router);
+app.use("/api", api_router);
+app.use("/", express.static(__dirname + '/webapp/build'))
+app.get("/server", function(req,res) {
+    res.sendFile("/server/projekt117.zip");
+});
+
+app.listen(8000);

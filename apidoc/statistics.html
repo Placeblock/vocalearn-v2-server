@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Api Doc</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="nav">
+        <p id="nav-header">Vocalearn Api Docs</p>
+        <div id="nav-links">
+            <a href="index.html" class="nav-link">General</a>
+            <a href="authentication.html" class="nav-link">Authentication</a>
+            <a href="lesson.html" class="nav-link">Lesson</a>
+            <a href="selection.html" class="nav-link">Selection</a>
+            <a href="vocable.html" class="nav-link">Vocable</a>
+            <a href="statistics.html" class="active-link nav-link">Statistics</a>
+            <div id="nav-link-detail">
+                <a href="#add-section" class="nav-link-detail-link">add</a>
+                <a href="#get-section" class="nav-link-detail-link">get</a>
+            </div>
+        </div>
+    </div>
+    <div id="content">
+        <h1>Statistics</h1>
+        <p>
+            Each user has points for each vocable in both directions. With this part of
+            the API you can store stats and receive stats of individual vocables.
+        </p>
+        <div class="doc-section" id="add-section">
+            <h3>Add Statistics Request</h3>
+            <p>
+                With this request you can add statistics to a vocable
+            </p>
+            <div class="request">
+                <p class="request-header">HTTP-Request <span style="color: black;">(POST)</span></p>
+                <p class="request-url">/statistics/add</p>
+                <div class="request-params">
+                    <p class="request-params-header">Parameter</p>
+                    <p>"vocable" (The id of the Vocable you want to add statistics to)</p>
+                    <p>"known" (Has the user known the vocable?)</p>
+                    <p>"direction" (n_text -> f_text or f_text -> n_text ?)</p>
+                </div>
+            </div>
+        </div>
+        <div class="doc-section" id="get-section">
+            <h3>Get Statistics Request</h3>
+            <p>
+                With this request you can get statistics for a vocable
+            </p>
+            <div class="request">
+                <p class="request-header">HTTP-Request <span style="color: black;">(GET)</span></p>
+                <p class="request-url">/statistics/get</p>
+                <div class="request-params">
+                    <p class="request-params-header">Parameter</p>
+                    <p>"vocable" (The id of the vocable)</p>
+                </div>
+                <div class="request-receive">
+                    <p class="request-receive-header">Receive</p>
+                    <p>The statistics of the passed vocable</p>
+                    <div class="request-receive-format">
+                        <p>{</p>
+                        <p>"statistics":</p>
+                        <p style="margin-left: 20px;">{</p>
+                        <p style="margin-left: 40px;">0:</p>
+                        <p style="margin-left: 40px;">{</p>
+                        <p style="margin-left: 60px;">"req_time": req_time,</p>
+                        <p style="margin-left: 60px;">"req_count": req_count,</p>
+                        <p style="margin-left: 60px;">"score": score</p>
+                        <p style="margin-left: 40px;">},</p>
+                        <p style="margin-left: 40px;">1:</p>
+                        <p style="margin-left: 40px;">{</p>
+                        <p style="margin-left: 60px;">"req_time": req_time,</p>
+                        <p style="margin-left: 60px;">"req_count": req_count,</p>
+                        <p style="margin-left: 60px;">"score": score</p>
+                        <p style="margin-left: 40px;">}</p>
+                        <p style="margin-left: 20px;">}</p>
+                        <p>}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

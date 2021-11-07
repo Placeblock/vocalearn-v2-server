@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Api Doc</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="nav">
+        <p id="nav-header">Vocalearn Api Docs</p>
+        <div id="nav-links">
+            <a href="index.html" class="nav-link">General</a>
+            <a href="authentication.html" class="nav-link">Authentication</a>
+            <a href="lesson.html" class="nav-link">Lesson</a>
+            <a href="selection.html" class="nav-link">Selection</a>
+            <a href="vocable.html" class="active-link nav-link">Vocable</a>
+            <div id="nav-link-detail">
+                <a href="#create-section" class="nav-link-detail-link">create</a>
+                <a href="#delete-section" class="nav-link-detail-link">delete</a>
+                <a href="#edit-section" class="nav-link-detail-link">edit</a>
+                <a href="#search-section" class="nav-link-detail-link">search</a>
+            </div>
+            <a href="statistics.html" class="nav-link">Statistics</a>
+        </div>
+    </div>
+    <div id="content">
+        <h1>Vocable</h1>
+        <p>
+            Each vocable consists of the n_text which is the first language text,
+            the f_text which is the other language text and the hint which is something
+            that could be usefull to remember t he vocable better.
+        </p>
+        <div class="doc-section" id="create-section">
+            <h3>Create Vocable Request</h3>
+            <p>
+                With this request you can create new vocables
+            </p>
+            <div class="request">
+                <p class="request-header">HTTP-Request <span style="color: black;">(POST)</span></p>
+                <p class="request-url">/vocable/create</p>
+                <div class="request-params">
+                    <p class="request-params-header">Parameter</p>
+                    <p>"lesson" (The name of the lesson where the vocable should be put in)</p>
+                    <p>"n_text" (Described above)</p>
+                    <p>"f_text" (Described above)</p>
+                    <p>"hint" (Described above)</p>
+                </div>
+                <div class="request-receive">
+                    <p class="request-receive-header">Receive</p>
+                    <p>The vocable id</p>
+                    <div class="request-receive-format">
+                        <p>{</p>
+                        <p>"id":id</p>
+                        <p>}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="doc-section" id="delete-section">
+            <h3>Delete Vocable Request</h3>
+            <p>
+                With this request you can delete vocables
+            </p>
+            <div class="request">
+                <p class="request-header">HTTP-Request <span style="color: black;">(DELETE)</span></p>
+                <p class="request-url">/vocable/delete</p>
+                <div class="request-params">
+                    <p class="request-params-header">Parameter</p>
+                    <p>"id" (The id of the vocable)</p>
+                </div>
+            </div>
+        </div>
+        <div class="doc-section" id="edit-section">
+            <h3>Edit Vocable Request</h3>
+            <p>
+                With this request you can edit vocables
+            </p>
+            <div class="request">
+                <p class="request-header">HTTP-Request <span style="color: black;">(PUT)</span></p>
+                <p class="request-url">/vocable/edit</p>
+                <div class="request-params">
+                    <p class="request-params-header">Parameter</p>
+                    <p>"id" (The id of the vocable)</p>
+                    <p>"lesson" (The new lesson)</p>
+                    <p>"n_text" (Described above)</p>
+                    <p>"f_text" (Described above)</p>
+                    <p>"hint" (Described above)</p>
+                </div>
+            </div>
+        </div>
+        <div class="doc-section" id="search-section">
+            <h3>Search Vocable Request</h3>
+            <p>
+                With this request you can search trough all vocables in the database with
+                regex. (Usefull for dictionary)
+            </p>
+            <div class="request">
+                <p class="request-header">HTTP-Request <span style="color: black;">(GET)</span></p>
+                <p class="request-url">/vocable/search</p>
+                <div class="request-params">
+                    <p class="request-params-header">Parameter</p>
+                    <p>"regex" (The regex to search)</p>
+                </div>
+                <div class="request-receive">
+                    <p class="request-receive-header">Receive</p>
+                    <p>The matched vocables</p>
+                    <div class="request-receive-format">
+                        <p>{</p>
+                        <p>"vocables":</p>
+                        <p style="margin-left: 20px;">[</p>
+                        <p style="margin-left: 20px;">vocableid,</p>
+                        <p style="margin-left: 20px;">vocableid</p>
+                        <p style="margin-left: 20px;">...</p>
+                        <p style="margin-left: 20px;">]</p>
+                        <p>}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
