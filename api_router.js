@@ -8,6 +8,7 @@ const user_router = require("./routers/user_router");
 var friend_router = require("./routers/friend_router");
 var statistics_router = require("./routers/statistics_router");
 var lesson_router = require("./routers/lesson_router");
+var newlessonrouter = require("./routers/newlessonrouter");
 var vocable_router = require("./routers/vocable_router");
 const selection_router = require("./routers/selection_router");
 
@@ -23,6 +24,7 @@ api_router.use(fileUpload({
 api_router.use("/user", user_router);
 api_router.use("/friend", friend_router);
 api_router.use("/lesson", lesson_router);
+api_router.use("/newlesson", newlessonrouter);
 api_router.use("/selection", selection_router);
 api_router.use("/vocable", vocable_router);
 api_router.use("/statistics", statistics_router);

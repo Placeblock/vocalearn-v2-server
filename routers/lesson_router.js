@@ -47,21 +47,11 @@ lessons_router.delete("/delete/", function(req, res) {
 });
 
 lessons_router.get("/metadata/", function(req, res) {
-    var ids = req.query.id;
+    var id = req.query.id;
     if(id === undefined) {
         res.status(400).send({"error":buildError(400, 2003, "Missing Parameters! You should add an id parameter!")});
         return;
     }
-    if(!(Array.isArray(id))) {
-        ids = [ids];
-    }
-    var promises = [];
-    for(id of ids) {
-        promises.push(lessons_model.metadata(id));
-    }
-    Promise.all(promises).then((metadatas) => {
-
-    });
     lessons_model.metadata(id)
     .then(function(metadata) {
         res.json({"metadata":metadata});

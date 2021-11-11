@@ -1,14 +1,13 @@
-var mysql = require("mysql");
-var credentials = require("./credentials");
+let mongodb = require('mongodb');
 
-var connection = mysql.createConnection({
-    host: '127.0.0.1',
-    user: "vocalearn",
-    password: credentials.password,
-    database: 'vocalearn',
-    charset: 'utf8'
-});
 
-connection.connect();
+class Database {
+  static connect() {
+    const client = new mongodb.MongoClient('mongodb://localhost:27017');
+    client.connect();
+    this.db = client.db("vocalearn");
+  }
+}
+Database.connect();
 
-module.exports = connection;
+module.exports = Database;

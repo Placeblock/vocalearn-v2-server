@@ -3,6 +3,7 @@ var app = express();
 var cors = require('cors');
 const https = require('https');
 const fs = require('fs');
+const show_developer_site = true;
 path = require('path');
 websocket = require("./websocket");
 
@@ -18,7 +19,11 @@ app.use(cors(corsOptions));
 
 app.use("/doc", doc_router);
 app.use("/api", api_router);
-app.use("/", express.static(path.join(__dirname, '../webapp/build')))
+if(show_developer_site) {
+    app.use("/", express.static(__dirname + '/developerpage'));
+}else {
+    app.use("/", express.static(path.join(__dirname, '../webapp/build')));
+}
 
 var privateKey = fs.readFileSync( '/etc/letsencrypt/live/placeblock.undo.it/privkey.pem' );
 var certificate = fs.readFileSync( '/etc/letsencrypt/live/placeblock.undo.it/cert.pem' );
